@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 import storage
-from tester.runner import execute_run
+from my_app.runner import execute_run
 
 app = Flask(__name__)
 

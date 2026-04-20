@@ -5,7 +5,7 @@ import os
 # Petite astuce pour pouvoir importer storage.py qui est dans le dossier parent
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import storage
-from tester.tests import run_all_tests
+from my_app.test import run_all_tests
 
 def execute_run():
     """Lance les tests, calcule les métriques et sauvegarde le tout."""

@@ -1,4 +1,4 @@
-from tester.khaoula import make_request
+from my_app.khaoula import make_request
 
 BASE_URL = "https://api.frankfurter.app"
 
