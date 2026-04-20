@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoring API - Khaoula</title>
+    <style>
+        body {
+            background-color: #1e1e2f;
+            color: #c8c8d0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 30px;
+        }
+        .container { max-width: 900px; margin: auto; }
+        h1 { color: #bb86fc; border-bottom: 2px solid #bb86fc; padding-bottom: 10px; }
+        .btn {
+            display: inline-block;
+            background-color: #bb86fc;
+            color: #121212;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 30px;
+            transition: 0.3s;
+        }
+        .btn:hover { background-color: #9965f4; box-shadow: 0 0 10px #bb86fc; }
+        .run-card {
+            background-color: #2a2a40;
+            border-left: 5px solid #bb86fc;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        h3 { color: #ffffff; margin-top: 0; }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #1e1e2f;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+        .stats span { color: #bb86fc; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #3f3f5a; }
+        th { color: #a1a1b5; text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px; }
+        .status-pass { color: #03dac6; font-weight: bold; }
+        .status-fail { color: #cf6679; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ API Status - Dashboard de Khaoula</h1>
+        <a href="/run" class="btn" target="_blank">⚡ Exécuter les tests manuellement</a>
+
+        <h2>Derniers résultats</h2>
+        {% if runs %}
+            {% for run in runs %}
+            <div class="run-card">
+                <h3>Run du : {{ run.timestamp[:19].replace('T', ' à ') }}</h3>
+                <div class="stats">
+                    <div>Succès: <span>{{ run.summary.passed }}</span></div>
+                    <div>Échecs: <span>{{ run.summary.failed }}</span></div>
+                    <div>Latence moy: <span>{{ run.summary.latency_ms_avg }} ms</span></div>
+                    <div>Taux d'erreur: <span>{{ run.summary.error_rate * 100 }}%</span></div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Statut</th>
+                        <th>Latence</th>
+                        <th>Détails</th>
+                    </tr>
+                    {% for test in run.tests %}
+                    <tr>
+                        <td>{{ test.name }}</td>
+                        <td class="{{ 'status-pass' if test.status == 'PASS' else 'status-fail' }}">{{ test.status }}</td>
+                        <td>{{ test.latency_ms }} ms</td>
+                        <td>{{ test.details or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>En attente des premiers résultats de test...</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,16 +1,30 @@
-from flask import Flask, render_template_string, render_template, jsonify, request, redirect, url_for, session
-from flask import render_template
-from flask import json
-from urllib.request import urlopen
-from werkzeug.utils import secure_filename
-import sqlite3
+from flask import Flask, render_template, jsonify
+import storage
+from tester.runner import execute_run
 
 app = Flask(__name__)
 
-@app.get("/")
-def consignes():
-     return render_template('consignes.html')
+@app.route('/')
+def home():
+    # On garde la page d'accueil d'origine !
+    return render_template('consignes.html')
+
+@app.route('/run')
+def trigger_run():
+    """Déclenche l'exécution des tests manuellement via le web"""
+    run_data = execute_run()
+    return jsonify({
+        "message": "Tests exécutés avec succès !",
+        "data": run_data
+    })
+
+@app.route('/dashboard')
+def show_dashboard():
+    """Affiche l'interface web avec l'historique des tests"""
+    # Récupère tous les historiques depuis la base SQLite
+    all_runs = storage.get_all_runs()
+    # Envoie les données au fichier HTML
+    return render_template('dashboard.html', runs=all_runs)
 
 if __name__ == "__main__":
-    # utile en local uniquement
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True, port=8080)
